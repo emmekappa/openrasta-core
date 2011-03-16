@@ -20,8 +20,8 @@ namespace OpenRasta.OperationModel.Filters
 
         public IEnumerable<IOperation> Process(IEnumerable<IOperation> operations)
         {
-            if (_commContext.PipelineData.SelectedResource == null
-                || string.IsNullOrEmpty(_commContext.PipelineData.SelectedResource.UriName))
+            if (_commContext.Environment.SelectedResource == null
+                || string.IsNullOrEmpty(_commContext.Environment.SelectedResource.UriName))
             {
                 Log.NoResourceOrUriName();
                 return operations;
@@ -37,7 +37,7 @@ namespace OpenRasta.OperationModel.Filters
             return from operation in operations
                    let attribute = operation.FindAttribute<HttpOperationAttribute>()
                    where attribute != null
-                         && attribute.MatchesUriName(_commContext.PipelineData.SelectedResource.UriName)
+                         && attribute.MatchesUriName(_commContext.Environment.SelectedResource.UriName)
                    select operation;
         }
     }

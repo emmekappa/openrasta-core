@@ -10,10 +10,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using OpenRasta.Codecs;
 using OpenRasta.TypeSystem;
+using OpenRasta.Web;
 
-namespace OpenRasta.Web.Codecs
+namespace OpenRasta.Codecs
 {
     [MediaType("application/xml;q=0.5", "xml")]
     public class XmlDataContractCodec : XmlCodec
@@ -31,6 +31,7 @@ namespace OpenRasta.Web.Codecs
             new DataContractSerializer(entity.GetType()).WriteObject(Writer, entity);
         }
     }
+    
 }
 
 #region Full license

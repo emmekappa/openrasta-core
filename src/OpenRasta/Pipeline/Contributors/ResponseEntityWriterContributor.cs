@@ -47,14 +47,14 @@ namespace OpenRasta.Pipeline.Contributors
                 {
                     context.Response.Entity.Codec =
                         codecInstance =
-                        DependencyManager.GetService(context.PipelineData.ResponseCodec.CodecType) as IMediaTypeWriter;
+                        DependencyManager.GetService(context.Environment.ResponseCodec.CodecType) as IMediaTypeWriter;
                 }
                 if (codecInstance == null)
                 {
                     context.ServerErrors.Add(new Error {
                                                            Title =
                                                                "Codec {0} couldn't be initialized. Ensure the codec implements {1}.".
-                                                               With(context.PipelineData.ResponseCodec.CodecType,
+                                                               With(context.Environment.ResponseCodec.CodecType,
                                                                     typeof (IMediaTypeReader).Name)
                                                        });
                     return PipelineContinuation.Abort;
@@ -62,9 +62,9 @@ namespace OpenRasta.Pipeline.Contributors
                 else
                 {
                     Log.WriteDebug("Codec {0} selected.", codecInstance.GetType().Name);
-                    if (context.PipelineData.ResponseCodec != null &&
-                        context.PipelineData.ResponseCodec.Configuration != null)
-                        codecInstance.Configuration = context.PipelineData.ResponseCodec.Configuration;
+                    if (context.Environment.ResponseCodec != null &&
+                        context.Environment.ResponseCodec.Configuration != null)
+                        codecInstance.Configuration = context.Environment.ResponseCodec.Configuration;
 
                     using (Log.Operation(this, "Generating response entity."))
                     {

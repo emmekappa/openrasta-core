@@ -30,7 +30,7 @@ namespace HandlerResolver_Specification
             given_pipeline_resourceKey<Fake>();
             when_sending_notification<KnownStages.IUriMatching>();
 
-            Context.PipelineData.SelectedHandlers.ShouldBeNull();
+            Context.Environment.SelectedHandlers.ShouldBeNull();
         }
     }
 
@@ -50,8 +50,8 @@ namespace HandlerResolver_Specification
             when_sending_notification<KnownStages.IUriMatching>()
                 .ShouldBe(PipelineContinuation.Continue);
 
-            Context.PipelineData.SelectedHandlers.Count().ShouldBe(1);
-            Context.PipelineData.SelectedHandlers.First().Equals<Fake>();
+            Context.Environment.SelectedHandlers.Count().ShouldBe(1);
+            Context.Environment.SelectedHandlers.First().Equals<Fake>();
             
         }
     }

@@ -41,7 +41,7 @@ namespace OperationCreationContributor_Specification
             given_contributor();
             when_sending_notification();
             then_contributor_returns(PipelineContinuation.Continue);
-            Context.PipelineData.Operations.ShouldBeNull();
+            Context.Environment.Operations.ShouldBeNull();
         }
     }
 
@@ -73,7 +73,7 @@ namespace OperationCreationContributor_Specification
             when_sending_notification();
 
             then_contributor_returns(PipelineContinuation.Continue);
-            Context.PipelineData.Operations.ShouldHaveCountOf(1)
+            Context.Environment.Operations.ShouldHaveCountOf(1)
                 .ShouldHaveSameElementsAs(Operations);
         }
     }

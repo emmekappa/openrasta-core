@@ -21,10 +21,10 @@ namespace OpenRasta.Tests.Integration.Regressions
             ConfigureServer(() =>
             {
                 ResourceSpace.Uses.PipelineContributor<RecursiveContributor>();
-                ResourceSpace.Has.ResourcesOfType<string>()
-                    .AtUri("/news")
-                    .HandledBy<DefaultHandler>()
-                    .AsXmlDataContract();
+                ResourceSpace.Has.Resource<string>()
+                    .Uri("/news")
+                    .Handler<DefaultHandler>()
+                    .XmlDataContract();
             });
         }
         [Test]

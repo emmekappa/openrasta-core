@@ -97,7 +97,7 @@ namespace OpenRasta.Collections
 
     public static class CollectionExtensions
     {
-        public static void AddRange<T>(this IList<T> source, IEnumerable<T> newItems)
+        public static void AddRange<T>(this ICollection<T> source, IEnumerable<T> newItems)
         {
             if (source == null)
                 throw new ArgumentNullException("source");

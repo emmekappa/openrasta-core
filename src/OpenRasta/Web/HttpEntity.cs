@@ -52,6 +52,12 @@ namespace OpenRasta.Web
 
         public Stream Stream { get; private set; }
         public IList<Error> Errors { get; set; }
+
+        public Uri ContentLocation
+        {
+            get { return Headers.ContentLocation; }
+            set { Headers.ContentLocation = value; }
+        }
     }
 }
 

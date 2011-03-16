@@ -41,11 +41,11 @@ namespace OpenRasta.Pipeline.Contributors
 
         public PipelineContinuation ResolveHandler(ICommunicationContext context)
         {
-            var handlerTypes = _handlers.GetHandlerTypesFor(context.PipelineData.ResourceKey);
+            var handlerTypes = _handlers.GetHandlerTypesFor(context.Environment.ResourceKey);
 
             if (handlerTypes != null && handlerTypes.Count() > 0)
             {
-                context.PipelineData.SelectedHandlers = handlerTypes.ToList();
+                context.Environment.SelectedHandlers = handlerTypes.ToList();
                 return PipelineContinuation.Continue;
             }
             return PipelineContinuation.Abort;

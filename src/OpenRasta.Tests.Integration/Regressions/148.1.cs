@@ -18,10 +18,10 @@ namespace OpenRasta.Tests.Integration.Regressions
         public a_querystring_parameter_which_should_be_bound_to_a_type_that_does_not_expose_setters_and_instead_requires_use_of_a_constructor()
         {
             ConfigureServer(() =>
-                            ResourceSpace.Has.ResourcesOfType<FooReportResource>()
-                                .AtUri(URL)
-                                .HandledBy<FooReportResourceHandler>()
-                                .AsXmlDataContract());
+                            ResourceSpace.Has.Resource<FooReportResource>()
+                                .Uri(URL)
+                                .Handler<FooReportResourceHandler>()
+                                .XmlDataContract());
         }
 
         [Test]

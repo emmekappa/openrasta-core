@@ -40,7 +40,7 @@ namespace OpenRasta.Pipeline.Contributors
 
             if(schemeToUse == null)
             {
-                context.Response.Headers["Warning"] = "Unsupported Authentication Scheme";
+                context.Response.Headers.Add("Warning", "Unsupported Authentication Scheme");
                 return PipelineContinuation.Continue;
             }
 
@@ -55,7 +55,7 @@ namespace OpenRasta.Pipeline.Contributors
             if (authResult is AuthenticationResult.MalformedCredentials)
             {
                 context.OperationResult = new OperationResult.BadRequest();
-                context.Response.Headers["Warning"] = "Malformed credentials";
+                context.Response.Headers.Add("Warning", "Malformed credentials");
                 return PipelineContinuation.RenderNow;
             }
 

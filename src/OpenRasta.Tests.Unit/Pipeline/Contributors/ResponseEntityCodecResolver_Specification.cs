@@ -33,7 +33,7 @@ namespace ResponseEntityCodecResolver_Specification
             when_sending_notification<KnownStages.IOperationResultInvocation>()
                 .ShouldBe(PipelineContinuation.Continue);
 
-            Context.PipelineData.ResponseCodec.CodecType.ShouldBe<Codec>();
+            Context.Environment.ResponseCodec.CodecType.ShouldBe<Codec>();
         }
         [Test]
         public void there_is_no_vary_header()
@@ -64,7 +64,7 @@ namespace ResponseEntityCodecResolver_Specification
 
             when_running_pipeline();
             
-            Context.PipelineData.ResponseCodec.CodecType
+            Context.Environment.ResponseCodec.CodecType
                 .ShouldBe<CustomerCodec>();
             Context.Response.Entity.ContentType.MediaType
                 .ShouldBe("text/plain");
@@ -96,7 +96,7 @@ namespace ResponseEntityCodecResolver_Specification
 
             when_running_pipeline();
             
-            Context.PipelineData.ResponseCodec.ShouldBeNull();
+            Context.Environment.ResponseCodec.ShouldBeNull();
             Context.Response.Entity.ContentType.ShouldBeNull();
         }
 
@@ -111,7 +111,7 @@ namespace ResponseEntityCodecResolver_Specification
 
             when_running_pipeline();
             
-            Context.PipelineData.ResponseCodec.CodecType.ShouldBe<CustomerCodec>();
+            Context.Environment.ResponseCodec.CodecType.ShouldBe<CustomerCodec>();
             Context.Response.Entity.ContentType.MediaType.ShouldBe("text/plain");
         }
 
@@ -126,7 +126,7 @@ namespace ResponseEntityCodecResolver_Specification
             when_running_pipeline();
 
 
-            Context.PipelineData.ResponseCodec.CodecType
+            Context.Environment.ResponseCodec.CodecType
                 .ShouldBe<AnotherCustomerCodec>();
             Context.Response.Entity.ContentType.MediaType
                 .ShouldBe("application/xml");
@@ -142,7 +142,7 @@ namespace ResponseEntityCodecResolver_Specification
 
             when_running_pipeline();
 
-            Context.PipelineData.ResponseCodec.CodecType
+            Context.Environment.ResponseCodec.CodecType
                 .ShouldBe<CustomerCodec>();
             Context.Response.Entity.ContentType.MediaType
                 .ShouldBe("text/plain");
@@ -167,7 +167,7 @@ namespace ResponseEntityCodecResolver_Specification
             when_sending_notification<KnownStages.IOperationResultInvocation>()
                 .ShouldBe(PipelineContinuation.Continue);
 
-            Context.PipelineData.ResponseCodec.CodecType
+            Context.Environment.ResponseCodec.CodecType
                 .ShouldBe<CustomerCodec>();
             Context.Response.Entity.ContentType.MediaType
                 .ShouldBe("text/html");

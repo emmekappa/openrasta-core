@@ -5,8 +5,8 @@ namespace OpenRasta.Configuration.Fluent
 {
     public interface IHandlerParentDefinition : INoIzObject
     {
-        IHandlerForResourceWithUriDefinition HandledBy<T>();
-        IHandlerForResourceWithUriDefinition HandledBy(Type type);
-        IHandlerForResourceWithUriDefinition HandledBy(IType type);
+        IHandlerForResourceWithUriDefinition Handler<T>();
+        IHandlerForResourceWithUriDefinition Handler(Type type);
+        IHandlerForResourceWithUriDefinition Handler(IType type);
     }
 }

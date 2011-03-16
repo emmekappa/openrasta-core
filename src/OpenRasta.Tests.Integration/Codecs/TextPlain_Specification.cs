@@ -26,7 +26,7 @@ namespace TextPlain_Specification
         public when_using_text_plain()
         {
             ConfigureServer(
-                () => ResourceSpace.Has.ResourcesOfType<Customer>().AtUri("/{customerId}").HandledBy<CustomerHandler>()
+                () => ResourceSpace.Has.Resource<Customer>().Uri("/{customerId}").Handler<CustomerHandler>()
             );
         }
 

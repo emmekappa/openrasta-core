@@ -9,18 +9,19 @@ using OpenRasta.Diagnostics;
 using OpenRasta.Pipeline;
 using OpenRasta.TypeSystem.ReflectionBased;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.OperationModel.Filters
 {
     public class UriParametersFilter : IOperationFilter
     {
-        readonly PipelineData _pipelineData;
+        readonly Environment _environment;
 
         public UriParametersFilter(ICommunicationContext context, IErrorCollector collector)
         {
             Logger = NullLogger.Instance;
             Errors = collector;
-            _pipelineData = context.PipelineData;
+            _environment = context.Environment;
         }
 
         IErrorCollector Errors { get; set; }
@@ -32,7 +33,7 @@ namespace OpenRasta.OperationModel.Filters
 
             foreach (var operation in operations)
             {
-                if (IsEmpty(_pipelineData.SelectedResource.UriTemplateParameters))
+                if (IsEmpty(_environment.SelectedResource.UriTemplateParameters))
                 {
                     LogAcceptNoUriParameters(operation);
                     acceptedMethods++;
@@ -40,7 +41,7 @@ namespace OpenRasta.OperationModel.Filters
                     continue;
                 }
 
-                foreach (var uriParameterMatches in _pipelineData.SelectedResource.UriTemplateParameters)
+                foreach (var uriParameterMatches in _environment.SelectedResource.UriTemplateParameters)
                 {
                     var uriParametersCopy = new NameValueCollection(uriParameterMatches);
 
@@ -61,7 +62,7 @@ namespace OpenRasta.OperationModel.Filters
             LogAcceptedCount(acceptedMethods);
 
             if (acceptedMethods <= 0)
-                Errors.AddServerError(CreateErrorNoOperationFound(_pipelineData.SelectedResource.UriTemplateParameters));
+                Errors.AddServerError(CreateErrorNoOperationFound(_environment.SelectedResource.UriTemplateParameters));
         }
 
         static BindingResult ConvertFromString(string strings, Type entityType)

@@ -62,7 +62,7 @@ namespace OpenRasta.Tests.Unit.Web.Pipeline.Contributors
         protected void given_operations(int count)
         {
             var mock = new Mock<IOperationCreator>();
-            Context.PipelineData.Operations = count >= 0 ? Enumerable.Range(0, count).Select(i => CreateMockOperation()).ToList() : null;
+            Context.Environment.Operations = count >= 0 ? Enumerable.Range(0, count).Select(i => CreateMockOperation()).ToList() : null;
         }
 
         IOperation CreateMockOperation()

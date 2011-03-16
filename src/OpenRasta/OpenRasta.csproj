@@ -60,6 +60,7 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" Condition="'$(RuntimeTargetFrameworkVersion)' == 'v3.5'" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\AuthenticationResult.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Codecs\application\x-www-form-urlencoded\ApplicationXWwwFormUrlencodedObjectCodec.cs" />
     <Compile Include="Codecs\application\xhtml+xml\OperationResultCodec.cs" />
     <Compile Include="Codecs\application\xhtml+xml\OperationResultPage.cs" />
+    <Compile Include="Codecs\application\xml\LinkingXmlDataContractCodec.cs" />
     <Compile Include="Codecs\application\xml\XmlDataContractCodec.cs" />
     <Compile Include="Codecs\CodecExtensions.cs" />
     <Compile Include="Codecs\CodecMatch.cs" />
@@ -121,19 +123,22 @@
     <Compile Include="Collections\Specialized\DependencyTree%271.cs" />
     <Compile Include="Configuration\CodecDefinitionExtensions.cs" />
     <Compile Include="Configuration\CodecParentDefinitionExtensions.cs" />
+    <Compile Include="Configuration\ConventionsExtensions.cs" />
     <Compile Include="Configuration\Fluent\INoIzObject.cs" />
     <Compile Include="Configuration\HasExtensions.cs" />
-    <Compile Include="Configuration\JsonConfigurationExtensions.cs" />
+    <Compile Include="Configuration\Fluent\IOverrides.cs" />
+    <Compile Include="Configuration\JsonDataContractConfigurationExtensions.cs" />
     <Compile Include="Configuration\LegacyHasExtensions.cs" />
     <Compile Include="Configuration\MetaModel\MediaTypeModel.cs" />
     <Compile Include="Configuration\UsesExtensions.cs" />
-    <Compile Include="Configuration\XmlConfigurationExtensions.cs" />
+    <Compile Include="Configuration\XmlDataContractExtensions.cs" />
     <Compile Include="Configuration\XmlSeralizerConfiguration.cs" />
     <Compile Include="Data\PagedData.cs" />
     <Compile Include="Diagnostics\LogCategoryAttribute.cs" />
     <Compile Include="Diagnostics\LogSource.cs" />
     <Compile Include="Diagnostics\NullErrorCollector.cs" />
     <Compile Include="Diagnostics\OperationContextErrorCollector.cs" />
+    <Compile Include="Hypermedia\Link.cs" />
     <Compile Include="ObjectPaths.cs" />
     <Compile Include="Pipeline\Contributors\AuthenticationChallengerContributor.cs" />
     <Compile Include="Pipeline\Contributors\AuthenticationContributor.cs" />
@@ -183,7 +188,7 @@
     <Compile Include="DI\Internal\DependencyRegistration.cs" />
     <Compile Include="DI\Internal\DependencyRegistrationCollection.cs" />
     <Compile Include="DI\IDependencyResolverAccessor.cs" />
-    <Compile Include="Configuration\Fluent\ResourceSpace.cs" />
+    <Compile Include="Configuration\ResourceSpace.cs" />
     <Compile Include="Diagnostics\DebuggerLoggingTraceListener.cs" />
     <Compile Include="Diagnostics\ILogger.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
@@ -516,7 +521,7 @@
     <Compile Include="Web\OperationResult.cs" />
     <Compile Include="Pipeline\IPipeline.cs" />
     <Compile Include="Pipeline\IPipelineContributor.cs" />
-    <Compile Include="Pipeline\PipelineData.cs" />
+    <Compile Include="Pipeline\Environment.cs" />
     <Compile Include="Pipeline\PipelineExecutionOrderExtensions.cs" />
     <Compile Include="Pipeline\PipelineRunner.cs" />
     <Compile Include="Pipeline\Contributors\ResponseEntityCodecResolverContributor.cs" />

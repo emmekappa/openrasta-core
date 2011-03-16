@@ -8,7 +8,7 @@ namespace OpenRasta.Configuration
         [Obsolete("The syntax has changed. Please use .And.AtUri instead.")]
         public static IUriDefinition AndAt(this IUriDefinition uriDefinition, string uri)
         {
-            return uriDefinition.And.AtUri(uri);
+            return uriDefinition.And.Uri(uri);
         }
 
         [Obsolete("The syntax has changed. Please use .ForMediaType instead.")]

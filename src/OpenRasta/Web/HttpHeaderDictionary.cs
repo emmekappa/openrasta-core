@@ -13,109 +13,136 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 
 namespace OpenRasta.Web
 {
     /// <summary>
-    /// Provides a list of http headers. In dire need of refactoring to use specific header types similar to http digest.
+    ///   Provides a list of http headers. In dire need of refactoring to use specific header types similar to http digest.
     /// </summary>
-    public class HttpHeaderDictionary : IDictionary<string, string>
+    public class HttpHeaderDictionary : IEnumerable<KeyValuePair<string,string>>
     {
-        readonly IDictionary<string, string> _base = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        readonly IDictionary<string, List<string>> _base = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        const string HDR_CONTENT_DISPOSITION = "Content-Disposition";
+        const string HDR_CONTENT_LENGTH = "Content-Length";
+        const string HDR_CONTENT_TYPE = "Content-Type";
+        const string HDR_CONTENT_LOCATION = "Content-Location";
+
         ContentDispositionHeader _contentDisposition;
         long? _contentLength;
         MediaType _contentType;
-        string HDR_CONTENT_DISPOSITION = "Content-Disposition";
-        string HDR_CONTENT_LENGTH = "Content-Length";
-        string HDR_CONTENT_TYPE = "Content-Type";
+        Uri _contentLocation;
 
-        public HttpHeaderDictionary() { }
+        public HttpHeaderDictionary()
+        {
+        }
+        ICollection<string> GetValues(string headerName)
+        {
+            List<string> values;
+            if (!_base.TryGetValue(headerName, out values))
+                _base[headerName] = values = new List<string>();
+            return values;
+        }
 
         public HttpHeaderDictionary(NameValueCollection sourceDictionary)
         {
             foreach (string key in sourceDictionary.Keys)
-                this[key] = sourceDictionary[key];
+                foreach (var value in sourceDictionary.GetValues(key))
+                    Add(key, value);
+        }
+        public IEnumerator<KeyValuePair<string,string>> GetEnumerator()
+        {
+            return (from kv in _base
+                   from value in kv.Value
+                   select new KeyValuePair<string,string>(kv.Key, value))
+                   .GetEnumerator();
+        }
+        public ContentDispositionHeader ContentDisposition
+        {
+            get { return _contentDisposition; }
+            set { SetValue(ref _contentDisposition, HDR_CONTENT_DISPOSITION, value); }
         }
 
-        public MediaType ContentType { get { return _contentType; } set { SetValue(ref _contentType, HDR_CONTENT_TYPE, value); } }
-        public long? ContentLength { get { return _contentLength; } set { SetValue(ref _contentLength, HDR_CONTENT_LENGTH, value); } }
-        public ContentDispositionHeader ContentDisposition { get { return _contentDisposition; } set { SetValue(ref _contentDisposition, HDR_CONTENT_DISPOSITION, value); } }
-
-        public void Add(string key, string value)
+        public long? ContentLength
         {
-            _base.Add(key, value);
-            UpdateValue(key, value);
+            get { return _contentLength; }
+            set { SetValue(ref _contentLength, HDR_CONTENT_LENGTH, value); }
         }
 
-        public bool Remove(string key)
+        public Uri ContentLocation
         {
-            bool result = _base.Remove(key);
-            UpdateValue(key, null);
-            return result;
+            get { return _contentLocation; }
+            set { SetValue(ref _contentLocation, HDR_CONTENT_LOCATION, value); }
+        }
+
+        public MediaType ContentType
+        {
+            get { return _contentType; }
+            set { SetValue(ref _contentType, HDR_CONTENT_TYPE, value); }
+        }
+
+        public int Count
+        {
+            get { return _base.Count; }
         }
 
         public string this[string key]
         {
             get
             {
-                string result;
+                List<string> result;
                 if (_base.TryGetValue(key, out result))
-                    return result;
+                    return result.FirstOrDefault();
                 return null;
             }
             set
             {
-                _base[key] = value;
-                UpdateValue(key, value);
+                Set(key, value);
             }
         }
 
-        public bool ContainsKey(string key) { return _base.ContainsKey(key); }
-
-        public ICollection<string> Keys { get { return _base.Keys; } }
-
-        public bool TryGetValue(string key, out string value) { return _base.TryGetValue(key, out value); }
-
-        public ICollection<string> Values { get { return _base.Values; } }
-
-        public void Add(KeyValuePair<string, string> item) { _base.Add(item.Key, item.Value); }
-
-        public void Clear() { _base.Clear(); }
-
-        public bool Contains(KeyValuePair<string, string> item) { return _base.ContainsKey(item.Key); }
-
-        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) { (_base).CopyTo(array, arrayIndex); }
-
-        public int Count { get { return _base.Count; } }
-
-        public bool IsReadOnly { get { return false; } }
-
-        public bool Remove(KeyValuePair<string, string> item) { return Remove(item.Key); }
-
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() { return _base.GetEnumerator(); }
-
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
-
-        void UpdateValue(string headerName, string value)
+        public void Add(string key, string value)
         {
-            if (headerName.Equals(HDR_CONTENT_TYPE, StringComparison.OrdinalIgnoreCase))
-                _contentType = new MediaType(value);
-            else if (headerName.Equals(HDR_CONTENT_LENGTH, StringComparison.OrdinalIgnoreCase))
-            {
-                long contentLength;
-                if (long.TryParse(value,NumberStyles.Float,CultureInfo.InvariantCulture, out contentLength))
-                    _contentLength = contentLength;
-            }
-            else if (headerName.Equals(HDR_CONTENT_DISPOSITION, StringComparison.OrdinalIgnoreCase))
-            {
-                _contentDisposition = new ContentDispositionHeader(value);
-            }
+            GetValues(key).Add(value);
+            UpdateValue(key, new[]{value});
+        }
+        public void Set(string key, string value)
+        {
+            var values = GetValues(key);
+            values.Clear();
+            values.Add(value);
+            UpdateValue(key, new[] { value });
         }
 
         void SetValue<T>(ref T typedKey, string key, T value)
         {
             typedKey = value;
-            _base[key] = value == null ? null : value.ToString();
+            _base[key] = value == null ? new List<string>(0) : new List<string> { value.ToString() };
+        }
+
+        void UpdateValue(string headerName, IEnumerable<string> value)
+        {
+            if (headerName.Equals(HDR_CONTENT_TYPE, StringComparison.OrdinalIgnoreCase))
+                _contentType = new MediaType(value.First());
+            else if (headerName.Equals(HDR_CONTENT_LENGTH, StringComparison.OrdinalIgnoreCase))
+            {
+                long contentLength;
+                if (long.TryParse(value.First(), NumberStyles.Float, CultureInfo.InvariantCulture, out contentLength))
+                    _contentLength = contentLength;
+            }
+            else if (headerName.Equals(HDR_CONTENT_DISPOSITION, StringComparison.OrdinalIgnoreCase))
+            {
+                _contentDisposition = new ContentDispositionHeader(value.First());
+            }
+            else if (headerName.Equals(HDR_CONTENT_LOCATION, StringComparison.OrdinalIgnoreCase))
+            {
+                _contentLocation = new Uri(value.First(), UriKind.RelativeOrAbsolute);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -24,10 +24,10 @@ namespace HtmlForm_Specification
     {
         public when_receiving_an_entity_body()
         {
-            ConfigureServer(() => ResourceSpace.Has.ResourcesOfType<Customer>()
-                                      .AtUri("/flat/{id}").Named("Flat")
+            ConfigureServer(() => ResourceSpace.Has.Resource<Customer>()
+                                      .Uri("/flat/{id}").Named("Flat")
                                       .AndAt("/constructed/{id}").Named("Constructed")
-                                      .HandledBy<CustomerHandler>());
+                                      .Handler<CustomerHandler>());
         }
 
         [Test]

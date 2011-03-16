@@ -9,28 +9,28 @@ namespace OpenRasta.Configuration
 {
     public static class HasExtensions
     {
-        public static IResourceDefinition ResourcesNamed(this IHas has, string name)
+        public static IResourceDefinition Resource(this IHas has, string name)
         {
-            return has.ResourcesWithKey(name);
+            return has.ResourceKey(name);
         }
 
-        public static IResourceDefinition ResourcesOfType<T>(this IHas has)
+        public static IResourceDefinition Resource<T>(this IHas has)
         {
-            return has.ResourcesWithKey(typeof(T));
+            return has.ResourceKey(typeof(T));
         }
 
-        public static IResourceDefinition ResourcesOfType(this IHas has, Type clrType)
+        public static IResourceDefinition Resource(this IHas has, Type clrType)
         {
-            return has.ResourcesWithKey(clrType);
+            return has.ResourceKey(clrType);
         }
 
-        public static IResourceDefinition ResourcesOfType(this IHas has, IType type)
+        public static IResourceDefinition Resource(this IHas has, IType type)
         {
-            return has.ResourcesWithKey(type);
+            return has.ResourceKey(type);
         }
 
         /// <exception cref="ArgumentNullException"><c>has</c> is null.</exception>
-        public static IResourceDefinition ResourcesWithKey(this IHas has, object resourceKey)
+        public static IResourceDefinition ResourceKey(this IHas has, object resourceKey)
         {
             if (has == null) throw new ArgumentNullException("has");
             if (resourceKey == null) throw new ArgumentNullException("resourceKey");

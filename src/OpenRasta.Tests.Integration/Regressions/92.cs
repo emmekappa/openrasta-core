@@ -19,10 +19,10 @@ namespace OpenRasta.Tests.Integration.Regressions
         {
             ConfigureServer(() =>
             {
-                ResourceSpace.Has.ResourcesOfType<Product>()
-                    .AtUri("/products/{name}")
-                    .HandledBy<ProductHandler>()
-                    .AsXmlDataContract();
+                ResourceSpace.Has.Resource<Product>()
+                    .Uri("/products/{name}")
+                    .Handler<ProductHandler>()
+                    .XmlDataContract();
             });
         }
 

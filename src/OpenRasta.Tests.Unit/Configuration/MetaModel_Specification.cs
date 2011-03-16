@@ -54,7 +54,7 @@ namespace Configuration_Specification
         [Test]
         public void a_resource_by_generic_type_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType<Customer>();
+            ResourceSpaceHas.Resource<Customer>();
 
             MetaModel.ResourceRegistrations.Count.ShouldBe(1);
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBe(typeof(Customer));
@@ -63,7 +63,7 @@ namespace Configuration_Specification
         [Test]
         public void a_resource_by_name_is_registered()
         {
-            ResourceSpaceHas.ResourcesNamed("customers");
+            ResourceSpaceHas.Resource("customers");
 
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBe("customers");
         }
@@ -71,7 +71,7 @@ namespace Configuration_Specification
         [Test]
         public void a_resource_by_type_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType(typeof(Customer));
+            ResourceSpaceHas.Resource(typeof(Customer));
 
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBe(typeof(Customer));
         }
@@ -80,7 +80,7 @@ namespace Configuration_Specification
         public void a_resource_with_any_key_is_registered()
         {
             var key = new object();
-            ResourceSpaceHas.ResourcesWithKey(key);
+            ResourceSpaceHas.ResourceKey(key);
 
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBeTheSameInstanceAs(key);
         }
@@ -88,7 +88,7 @@ namespace Configuration_Specification
         [Test]
         public void a_resource_with_IType_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType(TypeSystems.Default.FromClr(typeof(Customer)));
+            ResourceSpaceHas.Resource(TypeSystems.Default.FromClr(typeof(Customer)));
 
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBeOfType<IType>().Name.ShouldBe("Customer");
         }
@@ -96,13 +96,13 @@ namespace Configuration_Specification
         [Test]
         public void cannot_execute_registration_on_null_IHas()
         {
-            Executing(() => ((IHas)null).ResourcesWithKey(new object()))
+            Executing(() => ((IHas)null).ResourceKey(new object()))
                 .ShouldThrow<ArgumentNullException>();
         }
         [Test]
         public void a_resource_of_type_strict_is_registered_as_a_strict_type()
         {
-            ResourceSpaceHas.ResourcesOfType<Strictly<Customer>>();
+            ResourceSpaceHas.Resource<Strictly<Customer>>();
 
             MetaModel.ResourceRegistrations[0].ResourceKey.ShouldBeOfType<Type>().ShouldBe<Customer>();
             MetaModel.ResourceRegistrations[0].IsStrictRegistration.ShouldBeTrue();
@@ -111,7 +111,7 @@ namespace Configuration_Specification
         [Test]
         public void cannot_register_a_resource_with_a_null_key()
         {
-            Executing(() => ResourceSpaceHas.ResourcesWithKey(null))
+            Executing(() => ResourceSpaceHas.ResourceKey(null))
                 .ShouldThrow<ArgumentNullException>();
         }
     }
@@ -126,21 +126,21 @@ namespace Configuration_Specification
         [Test]
         public void a_null_language_defaults_to_the_inviariant_culture()
         {
-            ResourceSpaceHas.ResourcesOfType<Customer>().AtUri("/customer").InLanguage(null);
+            ResourceSpaceHas.Resource<Customer>().Uri("/customer").Language(null);
             TheUris[0].Language.ShouldBe(CultureInfo.InvariantCulture);
         }
 
         [Test]
         public void a_resource_can_be_registered_with_no_uri()
         {
-            ICodecParentDefinition reg = ResourceSpaceHas.ResourcesOfType<Customer>().WithoutUri;
+            ICodecParentDefinition reg = ResourceSpaceHas.Resource<Customer>().Anywhere;
             TheUris.Count.ShouldBe(0);
         }
 
         [Test]
         public void a_uri_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType<Customer>().AtUri("/customer");
+            ResourceSpaceHas.Resource<Customer>().Uri("/customer");
 
             TheUris.Count.ShouldBe(1);
             TheUris[0].Uri.ShouldBe("/customer");
@@ -149,14 +149,14 @@ namespace Configuration_Specification
         [Test]
         public void a_uri_language_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType<Customer>().AtUri("/customer").InLanguage("fr");
+            ResourceSpaceHas.Resource<Customer>().Uri("/customer").Language("fr");
             TheUris[0].Language.Name.ShouldBe("fr");
         }
 
         [Test]
         public void a_uri_name_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType<Customer>().AtUri("/customer").Named("default");
+            ResourceSpaceHas.Resource<Customer>().Uri("/customer").Named("default");
 
             TheUris[0].Name.ShouldBe("default");
         }
@@ -164,10 +164,10 @@ namespace Configuration_Specification
         [Test]
         public void can_register_multiple_uris_for_a_resource()
         {
-            ResourceSpaceHas.ResourcesOfType<Frodo>()
-                .AtUri("/theshire")
+            ResourceSpaceHas.Resource<Frodo>()
+                .Uri("/theshire")
                 .And
-                .AtUri("/lothlorien");
+                .Uri("/lothlorien");
 
             TheUris.Count.ShouldBe(2);
             TheUris[0].Uri.ShouldBe("/theshire");
@@ -179,16 +179,16 @@ namespace Configuration_Specification
         {
             Executing(() =>
                 {
-                    ICodecParentDefinition reg = ResourceSpaceHas.ResourcesOfType<Frodo>()
-                        .AtUri("/theshrine")
-                        .And.WithoutUri;
+                    ICodecParentDefinition reg = ResourceSpaceHas.Resource<Frodo>()
+                        .Uri("/theshrine")
+                        .And.Anywhere;
                 }).ShouldThrow<InvalidOperationException>();
         }
 
         [Test]
         public void lcannot_register_a_null_uri_for_a_resource()
         {
-            Executing(() => ResourceSpaceHas.ResourcesOfType<Customer>().AtUri(null))
+            Executing(() => ResourceSpaceHas.Resource<Customer>().Uri(null))
                 .ShouldThrow<ArgumentNullException>();
         }
     }
@@ -198,8 +198,8 @@ namespace Configuration_Specification
         [Test]
         public void a_handler_from_generic_type_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType<Frodo>().AtUri("/theshrine")
-                .HandledBy<CustomerHandler>();
+            ResourceSpaceHas.Resource<Frodo>().Uri("/theshrine")
+                .Handler<CustomerHandler>();
 
             FirstRegistration.Handlers[0].Name.ShouldBe("CustomerHandler");
         }
@@ -207,35 +207,35 @@ namespace Configuration_Specification
         [Test]
         public void a_handler_from_itype_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType(typeof(Frodo)).AtUri("/theshrine")
-                .HandledBy(TypeSystems.Default.FromClr(typeof(CustomerHandler)));
+            ResourceSpaceHas.Resource(typeof(Frodo)).Uri("/theshrine")
+                .Handler(TypeSystems.Default.FromClr(typeof(CustomerHandler)));
             FirstRegistration.Handlers[0].Name.ShouldBe("CustomerHandler");
         }
 
         [Test]
         public void a_handler_from_type_instance_is_registered()
         {
-            ResourceSpaceHas.ResourcesOfType(typeof(Frodo)).AtUri("/theshrine")
-                .HandledBy(typeof(CustomerHandler));
+            ResourceSpaceHas.Resource(typeof(Frodo)).Uri("/theshrine")
+                .Handler(typeof(CustomerHandler));
             FirstRegistration.Handlers[0].Name.ShouldBe("CustomerHandler");
         }
 
         [Test]
         public void cannot_add_a_null_handler()
         {
-            Executing(() => ResourceSpaceHas.ResourcesOfType<Frodo>().AtUri("/theshrine").HandledBy((IType)null))
+            Executing(() => ResourceSpaceHas.Resource<Frodo>().Uri("/theshrine").Handler((IType)null))
                 .ShouldThrow<ArgumentNullException>();
-            Executing(() => ResourceSpaceHas.ResourcesOfType<Frodo>().AtUri("/theshrine").HandledBy((Type)null))
+            Executing(() => ResourceSpaceHas.Resource<Frodo>().Uri("/theshrine").Handler((Type)null))
                 .ShouldThrow<ArgumentNullException>();
         }
 
         [Test]
         public void two_handlers_can_be_added()
         {
-            ResourceSpaceHas.ResourcesOfType(typeof(Frodo)).AtUri("/theshrine")
-                .HandledBy<CustomerHandler>()
+            ResourceSpaceHas.Resource(typeof(Frodo)).Uri("/theshrine")
+                .Handler<CustomerHandler>()
                 .And
-                .HandledBy<object>();
+                .Handler<object>();
 
             FirstRegistration.Handlers[0].Name.ShouldBe("CustomerHandler");
             FirstRegistration.Handlers[1].Name.ShouldBe("Object");
@@ -327,7 +327,7 @@ namespace Configuration_Specification
         {
             ExecuteTest(parent =>
             {
-                parent.TranscodedBy<CustomerCodec>().ForMediaType("application/xhtml+xml").ForExtension("xml");
+                parent.TranscodedBy<CustomerCodec>().ForMediaType("application/xhtml+xml").Extension("xml");
 
                 FirstRegistration.Codecs[0].MediaTypes[0]
                     .Extensions.ShouldContain("xml")
@@ -341,8 +341,8 @@ namespace Configuration_Specification
             ExecuteTest(parent =>
             {
                 parent.TranscodedBy<CustomerCodec>()
-                    .ForMediaType(MediaType.Xhtml).ForExtension("xml").ForExtension("xhtml")
-                    .ForMediaType("text/html").ForExtension("html");
+                    .MediaType(MediaType.Xhtml).Extension("xml").Extension("xhtml")
+                    .ForMediaType("text/html").Extension("html");
 
                 FirstRegistration.Codecs[0].MediaTypes[0]
                     .Extensions
@@ -364,7 +364,7 @@ namespace Configuration_Specification
                     .TranscodedBy<CustomerReaderCodec>()
                     .And
                     .TranscodedBy<CustomerCodec>()
-                    .ForMediaType("application/xhtml+xml").ForExtension("xml").ForExtension("xhtml")
+                    .ForMediaType("application/xhtml+xml").Extension("xml").Extension("xhtml")
                     .And
                     .TranscodedBy<CustomerWriterCodec>()
                     .ForMediaType("application/unknown");
@@ -387,14 +387,14 @@ namespace Configuration_Specification
         [Test]
         public void cannot_register_codec_not_implementing_icodec()
         {
-            Executing(() => ResourceSpaceHas.ResourcesOfType<Frodo>().WithoutUri.TranscodedBy(typeof(string)))
+            Executing(() => ResourceSpaceHas.Resource<Frodo>().Anywhere.TranscodedBy(typeof(string)))
                 .ShouldThrow<ArgumentOutOfRangeException>();
         }
         void ExecuteTest(Action<ICodecParentDefinition> test)
         {
-            test(ResourceSpaceHas.ResourcesOfType<Frodo>().AtUri("/theshrine").HandledBy<CustomerHandler>());
+            test(ResourceSpaceHas.Resource<Frodo>().Uri("/theshrine").Handler<CustomerHandler>());
             MetaModel.ResourceRegistrations.Clear();
-            test(ResourceSpaceHas.ResourcesOfType<Frodo>().WithoutUri);
+            test(ResourceSpaceHas.Resource<Frodo>().Anywhere);
         }
     }
     public class when_registering_custom_dependency : configuration_context

@@ -19,12 +19,12 @@ namespace OpenRasta.Configuration.Fluent.Implementation
             get { return _parent.And; }
         }
 
-        public ICodecWithMediaTypeDefinition ForMediaType(MediaType mediaType)
+        public ICodecWithMediaTypeDefinition MediaType(MediaType mediaType)
         {
-            return _parent.ForMediaType(mediaType);
+            return _parent.MediaType(mediaType);
         }
 
-        public ICodecWithMediaTypeDefinition ForExtension(string extension)
+        public ICodecWithMediaTypeDefinition Extension(string extension)
         {
             _model.Extensions.Add(extension);
             return this;

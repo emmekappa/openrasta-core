@@ -24,7 +24,7 @@ namespace MultipartWriter_Specification
         void GivenAFormEntity(string key, string value)
         {
             var entity = new MultipartHttpEntity();
-            entity.Headers["Content-Disposition"] = "form-data; name=\"" + key + "\"";
+            entity.Headers.Set("Content-Disposition", "form-data; name=\"" + key + "\"");
             entity.Stream = new MemoryStream();
             var swriter = new StreamWriter(entity.Stream, Encoding.ASCII);
             swriter.Write(value);

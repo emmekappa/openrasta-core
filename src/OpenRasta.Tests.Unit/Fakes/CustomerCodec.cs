@@ -21,7 +21,10 @@ namespace OpenRasta.Tests.Unit.Fakes
     {
         public object ReadFrom(IHttpEntity request, IType type, string paramName) { return type.CreateInstance(); }
 
-        public void WriteTo(object entity, IHttpEntity response, string[] p) { response.Headers["ENTITY_TYPE"] = entity.GetType().Name; }
+        public void WriteTo(object entity, IHttpEntity response, string[] p)
+        {
+            response.Headers.Set("ENTITY_TYPE", entity.GetType().Name);
+        }
     }
     public class AnotherCustomerCodec : CustomerCodec
     {

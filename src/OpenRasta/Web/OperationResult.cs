@@ -21,11 +21,12 @@ namespace OpenRasta.Web
         {
         }
 
-        protected OperationResult(int httpStatus)
+        protected OperationResult(int statusCode)
         {
-            StatusCode = httpStatus;
-            Title = httpStatus + " " + this.GetType().Name;
+            StatusCode = statusCode;
+            Title = statusCode + " " + this.GetType().Name;
             Description = ToString();
+            Links = new List<Link>();
         }
 
         public virtual string Description { get; set; }
@@ -49,19 +50,20 @@ namespace OpenRasta.Web
 
         public virtual string Title { get; set; }
         public virtual int StatusCode { get; set; }
+        public virtual ICollection<Link> Links { get; private set; }
 
         public void Execute(ICommunicationContext context)
         {
             context.Response.StatusCode = StatusCode;
             if (RedirectLocation != null)
-                context.Response.Headers["Location"] = RedirectLocation.AbsoluteUri;
+                context.Response.Headers.Set("Location", RedirectLocation.AbsoluteUri);
 
             OnExecute(context);
         }
 
         public override string ToString()
         {
-            return "OperationResult: type={0}, statusCode={1}".With(GetType().Name, StatusCode);
+            return "{0} {1}".With(StatusCode, GetType().Name);
         }
 
         protected virtual void OnExecute(ICommunicationContext context)
@@ -150,7 +152,7 @@ namespace OpenRasta.Web
 
         public class Modified : OperationResult
         {
-            // the lack of svn history makes me wonder why I have this at all... 
+            // When a resource is modified, you're supposed to return 200 if you have a response entity, 204 otherwise.
             public override int StatusCode
             {
                 get { return ResponseResource != null ? 200 : 204; }

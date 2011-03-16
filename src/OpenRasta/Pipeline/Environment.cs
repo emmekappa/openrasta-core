@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reflection;
 using OpenRasta.Codecs;
@@ -22,32 +23,21 @@ namespace OpenRasta.Pipeline
     /// <summary>
     /// </summary>
     /// <remarks>Need to inherit from a yet to be created SafeDictionary</remarks>
-    public class PipelineData : Dictionary<object, object>
+    public class Environment : Dictionary<string, object>
     {
-        const string PIPELINE_STATE = OR_PIPELINE + "PipelineStage";
-        const string HANDLER_TYPE = OR_PIPELINE + "HandlerType";
-        const string OPERATIONS = OR_PIPELINE + "Operations";
-        const string OR_PIPELINE = "__OR_PIPELINE_";
-        const string RESOURCE_KEY = OR_PIPELINE + "ResourceKey";
-        const string RESPONSE_CODEC = OR_PIPELINE + "ResponseCodec";
-        const string SELECTED_HANDLERS = OR_PIPELINE + "SelectedHandlers";
-        const string SELECTED_RESOURCE = OR_PIPELINE + "SelectedResource";
-
-        /// <summary>
-        /// Gets the type of the handler selected when matching a request against the registerd resource.
-        /// </summary>
-        public Type HandlerType
-        {
-            get { return SafeGet<Type>(HANDLER_TYPE); }
-            set { base[HANDLER_TYPE] = value; }
-        }
-
+        const string OPENRASTA_PREFIX = "openrasta.";
+        const string PIPELINE_STATE = OPENRASTA_PREFIX + "PipelineStage";
+        const string OPERATIONS = OPENRASTA_PREFIX + "Operations";
+        const string RESOURCE_KEY = OPENRASTA_PREFIX + "ResourceKey";
+        const string RESPONSE_CODEC = OPENRASTA_PREFIX + "ResponseCodec";
+        const string SELECTED_HANDLERS = OPENRASTA_PREFIX + "SelectedHandlers";
+        const string SELECTED_RESOURCE = OPENRASTA_PREFIX + "SelectedResource";
+        
         public IEnumerable<IOperation> Operations
         {
             get { return SafeGet<IEnumerable<IOperation>>(OPERATIONS); }
             set { base[OPERATIONS] = value; }
         }
-
         /// <summary>
         /// Gets the resource key associated with the requestURI. 
         /// </summary>
@@ -87,12 +77,18 @@ namespace OpenRasta.Pipeline
             set { base[PIPELINE_STATE] = value; }
         }
 
-        public new object this[object key]
+        public new object this[string key]
         {
             get { return ContainsKey(key) ? base[key] : null; }
             set { base[key] = value; }
         }
-
+        //T GetOrCreate<T>(string key) where T: class, new()
+        //{
+        //    object value;
+        //    if (!TryGetValue(key, out value))
+        //        this[key] = value = new T();
+        //    return (T)value;
+        //}
         T SafeGet<T>(string key) where T : class
         {
             object o;

@@ -91,8 +91,8 @@ namespace OpenRasta.Web
             {
                 int columnIndex = _currentLine.IndexOf(":");
                 if (columnIndex != -1)
-                    entity.Headers[_currentLine.Substring(0, columnIndex).Trim()] =
-                        _currentLine.Substring(columnIndex + 1).Trim();
+                    entity.Headers.Add(_currentLine.Substring(0, columnIndex).Trim(),
+                        _currentLine.Substring(columnIndex + 1).Trim());
             }
             if (_currentLine == null)
                 return false;

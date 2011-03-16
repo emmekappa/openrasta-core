@@ -7,7 +7,7 @@ namespace OpenRasta.Configuration
     {
         public static ICodecWithMediaTypeDefinition ForMediaType(this ICodecDefinition codecDefinition, string mediaType)
         {
-            return codecDefinition.ForMediaType(new MediaType(mediaType));
+            return codecDefinition.MediaType(new MediaType(mediaType));
         }
     }
 }

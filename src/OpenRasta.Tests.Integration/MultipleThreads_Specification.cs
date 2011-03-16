@@ -21,7 +21,7 @@ namespace MultipleThreads_Specification
         public test_container()
         {
             ConfigureServer(
-                () => ResourceSpace.Has.ResourcesOfType<Customer>().AtUri("/customers/{id}").HandledBy<CustomerHandler>()
+                () => ResourceSpace.Has.Resource<Customer>().Uri("/customers/{id}").Handler<CustomerHandler>()
             );
         }
         [Test, RequiresMTA]

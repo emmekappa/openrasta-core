@@ -36,6 +36,7 @@ using OpenRasta.TypeSystem.Surrogated;
 using OpenRasta.TypeSystem.Surrogates;
 using OpenRasta.TypeSystem.Surrogates.Static;
 using OpenRasta.Web;
+using OpenRasta.Web.UriDecorators;
 
 namespace OpenRasta.Configuration
 {
@@ -306,6 +307,7 @@ namespace OpenRasta.Configuration
             resolver.AddDependency(typeof(IOperationInterceptorProvider), OperationInterceptorProviderType, DependencyLifetime.Transient);
             resolver.AddDependency(typeof(IPathManager), PathManagerType, DependencyLifetime.Singleton);
             resolver.AddDependency(typeof(ISurrogateProvider), typeof(SurrogateBuilderProvider), DependencyLifetime.Singleton);
+            resolver.AddDependency(typeof(IUriDecorator), typeof(ContentTypeExtensionUriDecorator), DependencyLifetime.Transient);
         }
 
         [Conditional("DEBUG")]
@@ -376,6 +378,7 @@ namespace OpenRasta.Configuration
         protected virtual void AddDefaultContributors()
         {
             AddPipelineContributor<ResponseEntityCodecResolverContributor>();
+            AddPipelineContributor<ResponseLinksContributor>();
             AddPipelineContributor<ResponseEntityWriterContributor>();
             AddPipelineContributor<BootstrapperContributor>();
             AddPipelineContributor<HttpMethodOverriderContributor>();
@@ -397,6 +400,33 @@ namespace OpenRasta.Configuration
             AddPipelineContributor<OperationInterceptorContributor>();
 
             AddPipelineContributor<EndContributor>();
+        }
+    }
+
+    public class ResponseLinksContributor : IPipelineContributor
+    {
+        readonly IUriResolver _uriResolver;
+        IResponse _response;
+
+        public ResponseLinksContributor(IUriResolver uriResolver)
+        {
+            _uriResolver = uriResolver;
+        }
+
+        public void Initialize(IPipeline pipelineRunner)
+        {
+            pipelineRunner.Notify(WriteLinkHeaders)
+                    .Before<KnownStages.IResponseCoding>().And
+                    .After<KnownStages.ICodecResponseSelection>();
+        }
+
+        PipelineContinuation WriteLinkHeaders(ICommunicationContext arg)
+        {
+            foreach(var link in arg.OperationResult.Links)
+            {
+                arg.Response.Headers.Add("Link", link.HeaderValue(_uriResolver));
+            }
+            return PipelineContinuation.Continue;
         }
     }
 }

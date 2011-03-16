@@ -25,7 +25,7 @@ namespace OpenRasta.Configuration.Fluent.Implementation
         public ResourceModel Registration { get; private set; }
 
         /// <exception cref="InvalidOperationException">Cannot make a resource URI-less if a URI is already registered.</exception>
-        public ICodecParentDefinition WithoutUri
+        public ICodecParentDefinition Anywhere
         {
             get
             {
@@ -46,17 +46,17 @@ namespace OpenRasta.Configuration.Fluent.Implementation
             return new CodecDefinition(this, codecType, configuration);
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy<T>()
+        public IHandlerForResourceWithUriDefinition Handler<T>()
         {
-            return HandledBy(_typeSystem.FromClr(typeof(T)));
+            return Handler(_typeSystem.FromClr(typeof(T)));
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy(Type type)
+        public IHandlerForResourceWithUriDefinition Handler(Type type)
         {
-            return HandledBy(_typeSystem.FromClr(type));
+            return Handler(_typeSystem.FromClr(type));
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy(IType type)
+        public IHandlerForResourceWithUriDefinition Handler(IType type)
         {
             if (type == null) throw new ArgumentNullException("type");
             Registration.Handlers.Add(type);
@@ -64,7 +64,7 @@ namespace OpenRasta.Configuration.Fluent.Implementation
         }
 
         /// <exception cref="ArgumentNullException"><c>uri</c> is null.</exception>
-        public IUriDefinition AtUri(string uri)
+        public IUriDefinition Uri(string uri)
         {
             if (uri == null) throw new ArgumentNullException("uri");
             return new UriDefinition(this, uri);

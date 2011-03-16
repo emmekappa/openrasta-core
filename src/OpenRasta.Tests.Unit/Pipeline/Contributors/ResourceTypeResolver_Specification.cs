@@ -28,12 +28,12 @@ namespace ResourceTypeResolver_Specification
 
             given_request_uri("http://localhost/fake");
 
-            var theOriginalMatch = Context.PipelineData.SelectedResource = new UriRegistration("/", "int");
+            var theOriginalMatch = Context.Environment.SelectedResource = new UriRegistration("/", "int");
 
             when_sending_notification<BootstrapperContributor>()
                 .ShouldBe(PipelineContinuation.Continue);
 
-            Context.PipelineData.SelectedResource.ShouldBeTheSameInstanceAs(theOriginalMatch);
+            Context.Environment.SelectedResource.ShouldBeTheSameInstanceAs(theOriginalMatch);
         }
     }
 
@@ -50,7 +50,7 @@ namespace ResourceTypeResolver_Specification
             when_sending_notification<BootstrapperContributor>()
                 .ShouldBe(PipelineContinuation.RenderNow);
 
-            Context.PipelineData.SelectedResource.ShouldBeNull();
+            Context.Environment.SelectedResource.ShouldBeNull();
             Context.OperationResult.ShouldBeOfType<OperationResult.NotFound>();
         }
 
@@ -64,7 +64,7 @@ namespace ResourceTypeResolver_Specification
 
             when_sending_notification<BootstrapperContributor>();
 
-            Context.PipelineData.SelectedResource.ResourceKey.ShouldBe(typeof (Fake).AssemblyQualifiedName);
+            Context.Environment.SelectedResource.ResourceKey.ShouldBe(typeof (Fake).AssemblyQualifiedName);
 
         }[Test]
         public void the_match_is_relative_to_the_app_base_uri()
@@ -76,7 +76,7 @@ namespace ResourceTypeResolver_Specification
 
             when_sending_notification<BootstrapperContributor>();
 
-            Context.PipelineData.SelectedResource
+            Context.Environment.SelectedResource
                 .ShouldNotBeNull()
                 .ResourceKey.ShouldBe(typeof(Fake).AssemblyQualifiedName);
         }

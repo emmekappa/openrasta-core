@@ -22,7 +22,7 @@ namespace OpenRasta.Configuration.Fluent.Implementation
 
         public ResourceDefinition ResourceDefinition { get; set; }
 
-        public ICodecWithMediaTypeDefinition ForMediaType(MediaType mediaType)
+        public ICodecWithMediaTypeDefinition MediaType(MediaType mediaType)
         {
             var model = new MediaTypeModel { MediaType = mediaType };
             _codecRegistration.MediaTypes.Add(model);

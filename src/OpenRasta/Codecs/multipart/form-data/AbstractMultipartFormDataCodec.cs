@@ -12,6 +12,7 @@ using OpenRasta.Pipeline;
 using OpenRasta.TypeSystem;
 using OpenRasta.TypeSystem.ReflectionBased;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Codecs
 {
@@ -24,7 +25,7 @@ namespace OpenRasta.Codecs
         readonly byte[] _buffer = new byte[4096];
         readonly ICodecRepository _codecs;
         readonly IDependencyResolver _container;
-        readonly PipelineData _pipeline;
+        readonly Environment _pipeline;
         readonly ITypeSystem _typeSystem;
 
         protected AbstractMultipartFormDataCodec(ICommunicationContext context, 
@@ -34,7 +35,7 @@ namespace OpenRasta.Codecs
                                                  IObjectBinderLocator binderLocator)
         {
             // temporary until IRequest / IResponse are moved to the container
-            _pipeline = context.PipelineData;
+            _pipeline = context.Environment;
             _codecs = codecs;
             _typeSystem = typeSystem;
             _container = container;

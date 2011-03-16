@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenRasta.Configuration;
+using OpenRasta.Configuration.MetaModel;
 using OpenRasta.DI;
 using OpenRasta.Diagnostics;
 using OpenRasta.Pipeline;
@@ -110,19 +111,33 @@ namespace OpenRasta.Hosting
 
                 RegisterLeafDependencies();
 
-                ExecuteConfigurationSource();
+                ExecuteConfigurationSources();
+
+                Finish();
 
                 IsConfigured = true;
             });
         }
 
-        void ExecuteConfigurationSource()
+        void Finish()
+        {
+
+            var metaModelRepository = DependencyManager.GetService<IMetaModelRepository>();
+
+            metaModelRepository.Process();
+            DependencyManager.Pipeline.Initialize();
+        }
+
+        void ExecuteConfigurationSources()
         {
             if (Resolver.HasDependency<IConfigurationSource>())
             {
-                var configSource = Resolver.Resolve<IConfigurationSource>();
-                Log.WriteDebug("Using configuration source {0}", configSource.GetType());
-                configSource.Configure();
+                var configSources = Resolver.ResolveAll<IConfigurationSource>();
+                foreach (var configSource in configSources)
+                {
+                    Log.WriteDebug("Running configuration source {0}", configSource.GetType());
+                    configSource.Configure();
+                }
             }
             else
             {

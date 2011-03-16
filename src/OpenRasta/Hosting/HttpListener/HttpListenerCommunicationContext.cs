@@ -4,6 +4,7 @@ using System.Net;
 using System.Security.Principal;
 using OpenRasta.Pipeline;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Hosting.HttpListener
 {
@@ -15,7 +16,7 @@ namespace OpenRasta.Hosting.HttpListener
         public HttpListenerCommunicationContext(IHost host, HttpListenerContext nativeContext)
         {
             ServerErrors = new List<Error>();
-            PipelineData = new PipelineData();
+            Environment = new Environment();
             _host = host;
             _nativeContext = nativeContext;
             User = nativeContext.User;
@@ -40,7 +41,7 @@ namespace OpenRasta.Hosting.HttpListener
         }
 
         public OperationResult OperationResult { get; set; }
-        public PipelineData PipelineData { get; set; }
+        public Environment Environment { get; set; }
 
         public IRequest Request { get; private set; }
 

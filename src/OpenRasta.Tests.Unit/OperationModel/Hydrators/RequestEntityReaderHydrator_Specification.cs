@@ -15,7 +15,6 @@ using OpenRasta.Tests.Unit.Fakes;
 using OpenRasta.Tests.Unit.OperationModel.Filters;
 using OpenRasta.TypeSystem;
 using OpenRasta.Web;
-using OpenRasta.Web.Codecs;
 
 namespace OpenRasta.Tests.Unit.OperationModel.Hydrators
 {

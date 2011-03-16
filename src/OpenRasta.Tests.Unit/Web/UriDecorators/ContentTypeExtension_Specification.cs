@@ -26,7 +26,7 @@ namespace OpenRasta.Tests.Unit.Web.UriDecorators
             ProcessedUri.ShouldBe("http://localhost/vdir/customer/1");
 
             when_applying();
-            Context.PipelineData.ResponseCodec.CodecType.ShouldBe<XmlCodec>();
+            Context.Environment.ResponseCodec.CodecType.ShouldBe<XmlCodec>();
             Context.Response.Entity.ContentType.ShouldBe(MediaType.Xml);
 
         }

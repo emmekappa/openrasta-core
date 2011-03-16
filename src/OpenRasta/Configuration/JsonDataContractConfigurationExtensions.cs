@@ -12,19 +12,35 @@ using System;
 using System.Runtime.Serialization.Json;
 using OpenRasta.Codecs;
 using OpenRasta.Configuration.Fluent;
+using OpenRasta.Configuration.MetaModel;
+using OpenRasta.TypeSystem;
 
 namespace OpenRasta.Configuration
 {
-    public static class JsonConfigurationExtensions
+    public static class JsonDataContractConfigurationExtensions
     {
         /// <summary>
-        /// Enables reading and writing JSON representations of a resource using the <see cref="DataContractJsonSerializer"/>.
+        ///   Enables reading and writing JSON representations of a resource using the <see cref = "DataContractJsonSerializer" />.
         /// </summary>
-        /// <param name="codecParent"></param>
+        /// <param name = "codecParent"></param>
         /// <returns></returns>
-        public static ICodecDefinition AsJsonDataContract(this ICodecParentDefinition codecParent)
+        public static ICodecDefinition JsonDataContract(this ICodecParentDefinition codecParent)
         {
             return codecParent.TranscodedBy<JsonDataContractCodec>();
+        }
+
+        public static void JsonDataContract(this IUses uses)
+        {
+            var config = (IFluentTarget)uses;
+            config.Repository.ResourceRegistrations.Add(
+                    new ResourceModel
+                    {
+                            ResourceKey = config.TypeSystem.FromClr<object>(),
+                            Codecs =
+                                    {
+                                            new CodecModel(typeof(JsonDataContractCodec))
+                                    }
+                    });
         }
     }
 }

@@ -36,14 +36,14 @@ namespace OpenRasta.Pipeline.Contributors
 
         PipelineContinuation ResolveResource(ICommunicationContext context)
         {
-            if (context.PipelineData.SelectedResource == null)
+            if (context.Environment.SelectedResource == null)
             {
                 var uriToMath = context.GetRequestUriRelativeToRoot();
                 var uriMatch = _uriRepository.Match(uriToMath);
                 if (uriMatch != null)
                 {
-                    context.PipelineData.SelectedResource = uriMatch;
-                    context.PipelineData.ResourceKey = uriMatch.ResourceKey;
+                    context.Environment.SelectedResource = uriMatch;
+                    context.Environment.ResourceKey = uriMatch.ResourceKey;
                     context.Request.UriName = uriMatch.UriName;
                 }
                 else
@@ -56,7 +56,7 @@ namespace OpenRasta.Pipeline.Contributors
             {
                 Log.WriteInfo(
                     "Not resolving any resource as a resource with key {0} has already been selected.".With(
-                        context.PipelineData.SelectedResource.ResourceKey));
+                        context.Environment.SelectedResource.ResourceKey));
             }
             return PipelineContinuation.Continue;
         }

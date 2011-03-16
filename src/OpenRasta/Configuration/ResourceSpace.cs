@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 /* Authors:
  *      Sebastien Lambla (seb@serialseb.com)
  * Copyright:
@@ -7,27 +7,48 @@
  *      This file is distributed under the terms of the MIT License found at the end of this file.
  */
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenRasta.Codecs;
+
+using System.ComponentModel;
 using OpenRasta.Configuration.Fluent;
-using OpenRasta.Web;
-using OpenRasta.Web.Codecs;
+using OpenRasta.Configuration.Fluent.Implementation;
 
 namespace OpenRasta.Configuration
 {
-    public static class XmlConfigurationExtensions
+    public static class ResourceSpace
     {
-        public static ICodecDefinition AsXmlDataContract(this ICodecParentDefinition codecParent)
+        /// <summary>
+        /// Registers resources
+        /// </summary>
+        public static IHas Has
         {
-            return codecParent.TranscodedBy<XmlDataContractCodec>();
+            get { return new FluentTarget(); }
         }
+
+        public static IUses Uses
+        {
+            get { return new FluentTarget(); }
+        }
+        public static IOverrides Overrides
+        {
+            get { return new FluentTarget(); }
+        }
+
+        #region Hide static object members
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new static bool Equals(object objA, object objB)
+        {
+            return object.Equals(objA, objB);
+        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new static bool ReferenceEquals(object objA, object objB)
+        {
+            return object.ReferenceEquals(objA, objB);
+        }
+        #endregion
     }
 }
 
 #region Full license
-//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -35,10 +56,8 @@ namespace OpenRasta.Configuration
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -46,5 +65,4 @@ namespace OpenRasta.Configuration
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 #endregion

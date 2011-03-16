@@ -39,7 +39,7 @@ namespace LegacyManualConfiguration_Specification
         public void language_and_names_are_properly_registered()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .InLanguage("fr").Named("French");
+                .Language("fr").Named("French");
 
             WhenTheConfigurationIsFinished();
 
@@ -50,7 +50,7 @@ namespace LegacyManualConfiguration_Specification
         public void registering_two_urls_works()
         {
             GivenAResourceRegistrationFor<Customer>("/customer/{id}")
-                .InLanguage("en-CA")
+                .Language("en-CA")
                 .AndAt("/privileged/customer/{id}").Named("Privileged");
 
             WhenTheConfigurationIsFinished();
@@ -99,7 +99,7 @@ namespace LegacyManualConfiguration_Specification
         public void a_codec_registered_with_configuration_media_type_doesnt_have_the_attribute_media_type_registered()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>()
+                .Handler<CustomerHandler>()
                 .AndTranscodedBy<Codec>()
                 .ForMediaType("application/vnd.rasta.custom");
 
@@ -115,7 +115,7 @@ namespace LegacyManualConfiguration_Specification
         public void a_codec_registered_with_two_media_type_attributes_is_registered_twice()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>()
+                .Handler<CustomerHandler>()
                 .AndTranscodedBy<MultiCodec>();
 
             WhenTheConfigurationIsFinished();
@@ -130,7 +130,7 @@ namespace LegacyManualConfiguration_Specification
         public void a_codec_registered_with_two_media_types_in_configuration_is_registered_twice()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>()
+                .Handler<CustomerHandler>()
                 .AndTranscodedBy<Codec>()
                 .ForMediaType("application/vnd.rasta.config1")
                 .AndForMediaType("application/vnd.rasta.config2");
@@ -147,7 +147,7 @@ namespace LegacyManualConfiguration_Specification
         public void a_codec_registered_without_media_types_is_registered_with_the_default_attributed_media_types()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>()
+                .Handler<CustomerHandler>()
                 .AndTranscodedBy<Codec>();
 
             WhenTheConfigurationIsFinished();
@@ -160,7 +160,7 @@ namespace LegacyManualConfiguration_Specification
         public void registering_a_codec_without_media_type_in_config_or_in_attributes_raises_an_error()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>()
+                .Handler<CustomerHandler>()
                 .AndTranscodedBy<NakedCodec>();
 
             Executing(WhenTheConfigurationIsFinished)
@@ -185,7 +185,7 @@ namespace LegacyManualConfiguration_Specification
         public void the_handler_is_registered()
         {
             GivenAResourceRegistrationFor<Customer>("/customer")
-                .HandledBy<CustomerHandler>();
+                .Handler<CustomerHandler>();
 
             WhenTheConfigurationIsFinished();
 

@@ -26,7 +26,7 @@ namespace OpenRasta.Pipeline.Contributors
             try
             {
 
-                context.OperationResult = executor.Execute(context.PipelineData.Operations);
+                context.OperationResult = executor.Execute(context.Environment.Operations);
             }
             catch (InterceptorException)
             {

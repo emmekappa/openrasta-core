@@ -1,0 +1,6 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>C3ED9CCE-A140-4D0F-AE00-FBBF4CD27647/d:Codecs/d:application/d:xml</SkipFolder>
+    <SkipFolder>C3ED9CCE-A140-4D0F-AE00-FBBF4CD27647/d:Codecs/d:application</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

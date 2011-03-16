@@ -22,22 +22,22 @@ namespace OpenRasta.Configuration.Fluent.Implementation
             get { return _resourceDefinition; }
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy<T>()
+        public IHandlerForResourceWithUriDefinition Handler<T>()
         {
-            return _resourceDefinition.HandledBy<T>();
+            return _resourceDefinition.Handler<T>();
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy(Type type)
+        public IHandlerForResourceWithUriDefinition Handler(Type type)
         {
-            return _resourceDefinition.HandledBy(type);
+            return _resourceDefinition.Handler(type);
         }
 
-        public IHandlerForResourceWithUriDefinition HandledBy(IType type)
+        public IHandlerForResourceWithUriDefinition Handler(IType type)
         {
-            return _resourceDefinition.HandledBy(type);
+            return _resourceDefinition.Handler(type);
         }
 
-        public IUriDefinition InLanguage(string language)
+        public IUriDefinition Language(string language)
         {
             _uriModel.Language = language == null
                                      ? CultureInfo.InvariantCulture

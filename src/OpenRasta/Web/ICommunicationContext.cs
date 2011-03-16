@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 using OpenRasta.Pipeline;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Web
 {
@@ -24,7 +25,7 @@ namespace OpenRasta.Web
 
         OperationResult OperationResult { get; set; }
 
-        PipelineData PipelineData { get; }
+        Environment Environment { get; }
 
         IList<Error> ServerErrors { get; }
 

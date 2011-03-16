@@ -9,9 +9,11 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenRasta.Codecs;
+using OpenRasta.Collections;
 using OpenRasta.Diagnostics;
 using OpenRasta.TypeSystem;
 using OpenRasta.Web;
@@ -22,11 +24,13 @@ namespace OpenRasta.Pipeline.Contributors
     public class ResponseEntityCodecResolverContributor : KnownStages.ICodecResponseSelection
     {
         const string HEADER_ACCEPT = "Accept";
+        readonly IUriResolver _uriResolver;
         readonly ICodecRepository _codecs;
         readonly ITypeSystem _typeSystem;
 
-        public ResponseEntityCodecResolverContributor(ICodecRepository repository, ITypeSystem typeSystem)
+        public ResponseEntityCodecResolverContributor(IUriResolver uriResolver, ICodecRepository repository, ITypeSystem typeSystem)
         {
+            _uriResolver = uriResolver;
             _codecs = repository;
             _typeSystem = typeSystem;
         }
@@ -35,7 +39,7 @@ namespace OpenRasta.Pipeline.Contributors
 
         public PipelineContinuation FindResponseCodec(ICommunicationContext context)
         {
-            if (context.Response.Entity.Instance == null || context.PipelineData.ResponseCodec != null)
+            if (context.Response.Entity.Instance == null || context.Environment.ResponseCodec != null)
             {
                 LogNoResponseEntity();
                 return PipelineContinuation.Continue;
@@ -49,14 +53,27 @@ namespace OpenRasta.Pipeline.Contributors
 
             IEnumerable<CodecRegistration> sortedCodecs = _codecs.FindMediaTypeWriter(responseEntityType,
                                                                                       acceptedContentTypes);
+            
             int codecsCount = sortedCodecs.Count();
             CodecRegistration negotiatedCodec = sortedCodecs.FirstOrDefault();
 
             if (negotiatedCodec != null)
             {
                 LogCodecSelected(responseEntityType, negotiatedCodec, codecsCount);
+
                 context.Response.Entity.ContentType = negotiatedCodec.MediaType.WithoutQuality();
-                context.PipelineData.ResponseCodec = negotiatedCodec;
+                context.Environment.ResponseCodec = negotiatedCodec;
+                context.Response.Headers.Add("Vary", "Content-Type");
+                try
+                {
+                    var resourceUri = context.OperationResult.ResponseResource.CreateUri();
+                    SetAlternateRepresentationLinks(context, sortedCodecs, negotiatedCodec, resourceUri);
+                    SetCanonicalLink(context, resourceUri);
+                    context.Response.Entity.ContentLocation = GetContentLocationFromCodec(resourceUri, negotiatedCodec);
+                }
+                catch
+                {
+                }
             }
             else
             {
@@ -64,6 +81,31 @@ namespace OpenRasta.Pipeline.Contributors
                 return PipelineContinuation.RenderNow;
             }
             return PipelineContinuation.Continue;
+        }
+
+        void SetCanonicalLink(ICommunicationContext context, Uri resourceUri)
+        {
+            context.OperationResult.Links.Add(new CanonicalLink(resourceUri));
+        }
+
+        void SetAlternateRepresentationLinks(ICommunicationContext context, IEnumerable<CodecRegistration> sortedCodecs, CodecRegistration negotiatedCodec, Uri resourceUri)
+        {
+            context.OperationResult.Links.AddRange(
+                    from codec in sortedCodecs
+                    where codec != negotiatedCodec
+                    select (Link)new AlternateLink(
+                                         GetContentLocationFromCodec(resourceUri, codec),
+                                         codec.MediaType.WithoutQuality()
+                                         ));
+        }
+
+        Uri GetContentLocationFromCodec(Uri resourceUri, CodecRegistration negotiatedCodec)
+        {
+            if (negotiatedCodec.Extensions.Any() == false)
+                return resourceUri;
+            var builder = new UriBuilder(resourceUri);
+            builder.Path += "." + negotiatedCodec.Extensions.First();
+            return builder.Uri;
         }
 
         public void Initialize(IPipeline pipeline)

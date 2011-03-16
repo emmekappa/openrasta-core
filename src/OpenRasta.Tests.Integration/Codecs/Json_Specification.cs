@@ -25,9 +25,9 @@ namespace Json_Specification
     {
         public when_sending_json_content()
         {
-            ConfigureServer(() => ResourceSpace.Has.ResourcesOfType<Customer>()
-                                      .AtUri("/customer/{id}")
-                                      .HandledBy<CustomerHandler>()
+            ConfigureServer(() => ResourceSpace.Has.Resource<Customer>()
+                                      .Uri("/customer/{id}")
+                                      .Handler<CustomerHandler>()
                                       .AndTranscodedBy<JsonDataContractCodec>(null));
         }
 

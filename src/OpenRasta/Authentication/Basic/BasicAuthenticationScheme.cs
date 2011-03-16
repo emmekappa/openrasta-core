@@ -29,7 +29,7 @@ namespace OpenRasta.Authentication.Basic
 
         public void Challenge(IResponse response)
         {
-            response.Headers["WWW-Authenticate"] = string.Format("{0} realm=\"{1}\"", SCHEME, _basicAuthenticator.Realm);
+            response.Headers.Add("WWW-Authenticate", string.Format("{0} realm=\"{1}\"", SCHEME, _basicAuthenticator.Realm));
         }
 
         internal static BasicAuthRequestHeader ExtractBasicHeader(string value)

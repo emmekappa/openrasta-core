@@ -27,6 +27,8 @@ namespace OpenRasta.Web
         /// Provides access to a list of errors associated with the entity
         /// </summary>
         IList<Error> Errors { get; }
+
+        Uri ContentLocation { get; set; }
     }
 }
 

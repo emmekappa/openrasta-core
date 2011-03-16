@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using OpenRasta.Codecs;
 using OpenRasta.Collections;
+using OpenRasta.Configuration.MetaModel;
 using OpenRasta.DI;
 using OpenRasta.Diagnostics;
 using OpenRasta.Handlers;
@@ -15,6 +16,7 @@ using OpenRasta.Security;
 using OpenRasta.Testing;
 using OpenRasta.TypeSystem;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Tests
 {
@@ -71,6 +73,7 @@ namespace OpenRasta.Tests
         {
             Pipeline = new SinglePipeline<T>(constructor, Resolver, _actions);
             Pipeline.Contributors[0].Initialize(Pipeline);
+            
             return (T)Pipeline.Contributors[0];
         }
 
@@ -91,6 +94,7 @@ namespace OpenRasta.Tests
 
         public PipelineContinuation when_sending_notification<TTrigger>()
         {
+            DependencyManager.GetService<IMetaModelRepository>().Process();
             IsContributorExecuted = _actions.ContainsKey(typeof(TTrigger));
             Result = _actions[typeof(TTrigger)](Context);
             return Result;
@@ -98,23 +102,23 @@ namespace OpenRasta.Tests
 
         protected void given_pipeline_resourceKey<T1>()
         {
-            Context.PipelineData.ResourceKey = typeof(T1).AssemblyQualifiedName;
+            Context.Environment.ResourceKey = typeof(T1).AssemblyQualifiedName;
         }
 
 
         protected void given_pipeline_selectedHandler<THandler>()
         {
-            if (Context.PipelineData.SelectedHandlers == null)
-                Context.PipelineData.SelectedHandlers = new List<IType>();
+            if (Context.Environment.SelectedHandlers == null)
+                Context.Environment.SelectedHandlers = new List<IType>();
 
-            Context.PipelineData.SelectedHandlers.Add(TypeSystem.FromClr<THandler>());
+            Context.Environment.SelectedHandlers.Add(TypeSystem.FromClr<THandler>());
         }
 
         protected void given_pipeline_uriparams(NameValueCollection nameValueCollection)
         {
-            if (Context.PipelineData.SelectedResource == null)
-                Context.PipelineData.SelectedResource = new UriRegistration(null,null);
-            Context.PipelineData.SelectedResource.UriTemplateParameters.Add(nameValueCollection);
+            if (Context.Environment.SelectedResource == null)
+                Context.Environment.SelectedResource = new UriRegistration(null,null);
+            Context.Environment.SelectedResource.UriTemplateParameters.Add(nameValueCollection);
         }
 
         protected void given_registration_codec<TCodec>()
@@ -154,7 +158,7 @@ namespace OpenRasta.Tests
 
         protected void given_request_header_accept(string p)
         {
-            Context.Request.Headers["Accept"] = p;
+            Context.Request.Headers.Set("Accept", p);
         }
 
         protected void given_request_header_content_type(string mediaType)
@@ -179,7 +183,7 @@ namespace OpenRasta.Tests
         {
             Context.Response.Entity.ContentType = new MediaType(contentType);
 
-            Context.PipelineData.ResponseCodec = CodecRegistration.FromResourceType(responseEntity == null ? typeof(object) : responseEntity.GetType(),
+            Context.Environment.ResponseCodec = CodecRegistration.FromResourceType(responseEntity == null ? typeof(object) : responseEntity.GetType(),
                                                                                     codecType,
                                                                                     TypeSystem,
                                                                                     new MediaType(contentType),
@@ -208,6 +212,7 @@ namespace OpenRasta.Tests
             
             manager.SetupCommunicationContext(Context = new InMemoryCommunicationContext());
             DependencyManager.SetResolver(Resolver);
+            
         }
 
         protected override void TearDown()
@@ -227,7 +232,7 @@ namespace OpenRasta.Tests
                                   IDependencyResolver resolver,
                                   Dictionary<Type, Func<ICommunicationContext, PipelineContinuation>> actions)
             {
-                ContextData = new PipelineData();
+                ContextData = new Environment();
                 _resolver = resolver;
                 if (!_resolver.HasDependency(typeof(T)))
                     _resolver.AddDependency<T>();
@@ -249,7 +254,7 @@ namespace OpenRasta.Tests
                 }
             }
 
-            public PipelineData ContextData { get; private set; }
+            public Environment ContextData { get; private set; }
 
             public IList<IPipelineContributor> Contributors
             {
@@ -297,12 +302,12 @@ namespace OpenRasta.Tests
 
         protected void given_request_uriName(string uriName)
         {
-            if (Context.PipelineData.SelectedResource == null)
-                Context.PipelineData.SelectedResource = new UriRegistration(null, null, uriName, null);
+            if (Context.Environment.SelectedResource == null)
+                Context.Environment.SelectedResource = new UriRegistration(null, null, uriName, null);
             else
             {
-                var r = Context.PipelineData.SelectedResource;
-                Context.PipelineData.SelectedResource = new UriRegistration(r.UriTemplate,r.ResourceKey,uriName,r.UriCulture);
+                var r = Context.Environment.SelectedResource;
+                Context.Environment.SelectedResource = new UriRegistration(r.UriTemplate,r.ResourceKey,uriName,r.UriCulture);
             }
         }
 

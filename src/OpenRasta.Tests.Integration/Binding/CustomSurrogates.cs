@@ -47,9 +47,9 @@ namespace Dynamic_surrogates
             ConfigureServer(() =>
             {
 
-                ResourceSpace.Has.ResourcesOfType<Customer>()
-                    .AtUri("/customer/{id}")
-                    .HandledBy<Handler>();
+                ResourceSpace.Has.Resource<Customer>()
+                    .Uri("/customer/{id}")
+                    .Handler<Handler>();
 
                 ResourceSpace.Uses.CustomDependency<ISurrogateBuilder, MySurrogate>(DependencyLifetime.Transient);
             });

@@ -154,6 +154,11 @@ namespace OpenRasta.Testing
             return list;
         }
 
+        public static IEnumerable<KeyValuePair<TKey,TValue>> ShouldContain<TKey, TValue>(this IEnumerable<KeyValuePair<TKey,TValue>> list, TKey key, TValue value)
+        {
+            list.Any(x => x.Equals(new KeyValuePair<TKey, TValue>(key, value))).ShouldBeTrue();
+            return list;
+        }
         public static IEnumerable<T> ShouldContain<T>(this IEnumerable<T> list, T expected, Func<T, T, bool> match)
         {
             foreach (var t in list)

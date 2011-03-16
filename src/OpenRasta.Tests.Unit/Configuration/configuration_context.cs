@@ -9,6 +9,7 @@
 #endregion
 using System;
 using OpenRasta.Configuration.Fluent;
+using OpenRasta.Configuration.MetaModel;
 using OpenRasta.Hosting;
 using OpenRasta.Hosting.InMemory;
 using OpenRasta.Testing;
@@ -27,7 +28,7 @@ namespace OpenRasta.Tests.Unit.Configuration
             Host = new InMemoryHost(null);
             
             DependencyManager.SetResolver(Host.Resolver);
-            configCookie = OpenRastaConfiguration.Manual;
+
         }
         protected override void TearDown()
         {
@@ -39,21 +40,14 @@ namespace OpenRasta.Tests.Unit.Configuration
         }
         public virtual void WhenTheConfigurationIsFinished()
         {
-            try
-            {
-                configCookie.Dispose();
-            }
-            finally
-            {
-                configCookie = null;
-            }
+            DependencyManager.GetService<IMetaModelRepository>().Process();
         }
 
         public IUriDefinition GivenAResourceRegistrationFor<TResource>(string uri)
         {
 
-            var resourcetype = ResourceSpace.Has.ResourcesOfType<TResource>();
-            return resourcetype.AtUri(uri);
+            var resourcetype = ResourceSpace.Has.Resource<TResource>();
+            return resourcetype.Uri(uri);
         }
 
         protected class Customer { }

@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 /* Authors:
  *      Sebastien Lambla (seb@serialseb.com)
  * Copyright:
@@ -8,43 +8,52 @@
  */
 #endregion
 
-using System.ComponentModel;
+using System;
+using OpenRasta.Codecs;
 using OpenRasta.Configuration.Fluent;
-using OpenRasta.Configuration.Fluent.Implementation;
+using OpenRasta.Configuration.MetaModel;
+using OpenRasta.TypeSystem;
 
 namespace OpenRasta.Configuration
 {
-    public static class ResourceSpace
+    public static class XmlDataContractExtensions
     {
-        /// <summary>
-        /// Registers resources
-        /// </summary>
-        public static IHas Has
+        public static ICodecDefinition XmlDataContract(this ICodecParentDefinition codecParent)
         {
-            get { return new FluentTarget(); }
+            return codecParent.TranscodedBy<XmlDataContractCodec>();
         }
 
-        public static IUses Uses
+        public static void XmlDataContract(this IUses uses)
         {
-            get { return new FluentTarget(); }
+            var config = (IFluentTarget)uses;
+            config.Repository.ResourceRegistrations.Add(
+                    new ResourceModel
+                    {
+                            ResourceKey = config.TypeSystem.FromClr<object>(),
+                            Codecs =
+                                    {
+                                            new CodecModel(typeof(XmlDataContractCodec))
+                                }
+                });
         }
-
-        #region Hide static object members
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new static bool Equals(object objA, object objB)
+        public static void LinkingXmlDataContract(this IUses uses)
         {
-            return object.Equals(objA, objB);
+            var config = (IFluentTarget)uses;
+            config.Repository.ResourceRegistrations.Add(
+                    new ResourceModel
+                    {
+                        ResourceKey = config.TypeSystem.FromClr<object>(),
+                        Codecs =
+                                    {
+                                            new CodecModel(typeof(LinkingXmlDataContractCodec))
+                                }
+                    });
         }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public new static bool ReferenceEquals(object objA, object objB)
-        {
-            return object.ReferenceEquals(objA, objB);
-        }
-        #endregion
     }
 }
 
 #region Full license
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
@@ -52,8 +61,10 @@ namespace OpenRasta.Configuration
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
+// 
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -61,4 +72,5 @@ namespace OpenRasta.Configuration
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 #endregion

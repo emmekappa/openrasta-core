@@ -27,11 +27,11 @@ namespace OpenRasta.Pipeline.Contributors
 
         PipelineContinuation CreateOperations(ICommunicationContext context)
         {
-            if (context.PipelineData.SelectedHandlers != null)
+            if (context.Environment.SelectedHandlers != null)
             {
-                context.PipelineData.Operations = _creator.CreateOperations(context.PipelineData.SelectedHandlers).ToList();
-                LogOperations(context.PipelineData.Operations);
-                if (context.PipelineData.Operations.Count() == 0)
+                context.Environment.Operations = _creator.CreateOperations(context.Environment.SelectedHandlers).ToList();
+                LogOperations(context.Environment.Operations);
+                if (context.Environment.Operations.Count() == 0)
                 {
                     context.OperationResult = CreateMethodNotAllowed(context);
                     return PipelineContinuation.RenderNow;
@@ -42,7 +42,7 @@ namespace OpenRasta.Pipeline.Contributors
 
         OperationResult.MethodNotAllowed CreateMethodNotAllowed(ICommunicationContext context)
         {
-            return new OperationResult.MethodNotAllowed(context.Request.Uri, context.Request.HttpMethod, context.PipelineData.ResourceKey);
+            return new OperationResult.MethodNotAllowed(context.Request.Uri, context.Request.HttpMethod, context.Environment.ResourceKey);
         }
 
         void LogOperations(IEnumerable<IOperation> operations)

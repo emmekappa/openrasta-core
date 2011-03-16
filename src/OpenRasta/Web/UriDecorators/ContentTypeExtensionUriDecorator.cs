@@ -42,7 +42,7 @@ namespace OpenRasta.Web.UriDecorators
             // other decorators may change the url later on and the match will have the wrong values
             // the content type however shouldn't change
             var entity = _context.Response.Entity;
-            _context.PipelineData.ResponseCodec = _selectedCodec;
+            _context.Environment.ResponseCodec = _selectedCodec;
 
             // TODO: Check if this still works. 
             entity.ContentType = _selectedCodec.MediaType;

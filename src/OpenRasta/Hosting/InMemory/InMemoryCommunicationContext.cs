@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using OpenRasta.Pipeline;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Hosting.InMemory
 {
@@ -24,12 +25,12 @@ namespace OpenRasta.Hosting.InMemory
             Request = new InMemoryRequest();
             Response = new InMemoryResponse();
             ServerErrors = new List<Error>();
-            PipelineData = new PipelineData();
+            Environment = new Environment();
         }
 
         public Uri ApplicationBaseUri { get; set; }
         public OperationResult OperationResult { get; set; }
-        public PipelineData PipelineData { get; set; }
+        public Environment Environment { get; set; }
         public IRequest Request { get; set; }
         public IResponse Response { get; set; }
 

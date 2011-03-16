@@ -16,14 +16,14 @@ namespace OpenRasta.Tests.Integration.Regressions
         {
             ConfigureServer(() =>
             {
-                ResourceSpace.Has.ResourcesOfType<SyndicationFeed>()
-                    .AtUri("/news/since/{year}/{month}/{day}")
-                    .HandledBy<ArticlesSinceHandler>()
+                ResourceSpace.Has.Resource<SyndicationFeed>()
+                    .Uri("/news/since/{year}/{month}/{day}")
+                    .Handler<ArticlesSinceHandler>()
                     .TranscodedBy<AtomFeedCodec>(null);
 
-                ResourceSpace.Has.ResourcesOfType<SyndicationItem>()
-                    .AtUri("/news/{id}")
-                    .HandledBy<ArticleHandler>()
+                ResourceSpace.Has.Resource<SyndicationItem>()
+                    .Uri("/news/{id}")
+                    .Handler<ArticleHandler>()
                     .TranscodedBy<AtomItemCodec>(null);
             });
         }

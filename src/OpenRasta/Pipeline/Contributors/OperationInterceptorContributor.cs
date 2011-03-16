@@ -26,7 +26,7 @@ namespace OpenRasta.Pipeline.Contributors
 
         PipelineContinuation WrapOperations(ICommunicationContext context)
         {
-            context.PipelineData.Operations = from op in context.PipelineData.Operations
+            context.Environment.Operations = from op in context.Environment.Operations
                                               let interceptors = _resolver.Resolve<IOperationInterceptorProvider>().GetInterceptors(op)
                                               select (IOperation)new OperationWithInterceptors(op, interceptors);
 

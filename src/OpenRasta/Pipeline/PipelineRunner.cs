@@ -91,9 +91,9 @@ namespace OpenRasta.Pipeline
             if (context == null) throw new ArgumentNullException("context");
             CheckPipelineIsInitialized();
 
-            if (context.PipelineData.PipelineStage == null)
-                context.PipelineData.PipelineStage = new PipelineStage(this);
-            RunCallGraph(context, context.PipelineData.PipelineStage);
+            if (context.Environment.PipelineStage == null)
+                context.Environment.PipelineStage = new PipelineStage(this);
+            RunCallGraph(context, context.Environment.PipelineStage);
         }
         void RunCallGraph(ICommunicationContext context, PipelineStage stage)
         {
@@ -174,7 +174,7 @@ namespace OpenRasta.Pipeline
                     "The request could not be processed because of a fatal error. See log below.",
                 ResponseResource = context.ServerErrors
             };
-            context.PipelineData.ResponseCodec = null;
+            context.Environment.ResponseCodec = null;
             context.Response.Entity.Instance = context.ServerErrors;
             context.Response.Entity.Codec = null;
             context.Response.Entity.ContentLength = null;

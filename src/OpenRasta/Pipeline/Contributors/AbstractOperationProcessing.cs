@@ -21,10 +21,10 @@ namespace OpenRasta.Pipeline.Contributors
 
         public virtual PipelineContinuation ProcessOperations(ICommunicationContext context)
         {
-            context.PipelineData.Operations = ProcessOperations(context.PipelineData.Operations).ToList();
-            if (context.PipelineData.Operations.Count() == 0)
+            context.Environment.Operations = ProcessOperations(context.Environment.Operations).ToList();
+            if (context.Environment.Operations.Count() == 0)
                 return OnOperationsEmpty(context);
-            return OnOperationProcessingComplete(context.PipelineData.Operations) ?? PipelineContinuation.Continue;
+            return OnOperationProcessingComplete(context.Environment.Operations) ?? PipelineContinuation.Continue;
         }
 
         public virtual IEnumerable<IOperation> ProcessOperations(IEnumerable<IOperation> operations)

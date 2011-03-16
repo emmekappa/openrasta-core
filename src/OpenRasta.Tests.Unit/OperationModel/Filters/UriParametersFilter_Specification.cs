@@ -75,7 +75,7 @@ namespace OpenRasta.Tests.Unit.OperationModel.Filters
         protected override void SetUp()
         {
             base.SetUp();
-            Context.PipelineData.SelectedResource = new UriRegistration(null,null);// { UriTemplateParameters = new List<NameValueCollection>() };
+            Context.Environment.SelectedResource = new UriRegistration(null,null);// { UriTemplateParameters = new List<NameValueCollection>() };
         }
 
         protected override UriParametersFilter create_filter()

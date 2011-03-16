@@ -11,17 +11,18 @@ using OpenRasta.Pipeline;
 using OpenRasta.TypeSystem;
 using OpenRasta.TypeSystem.ReflectionBased;
 using OpenRasta.Web;
+using Environment = OpenRasta.Pipeline.Environment;
 
 namespace OpenRasta.Codecs
 {
     public abstract class AbstractApplicationXWwwFormUrlencodedCodec
     {
         protected IObjectBinderLocator _binderLocator;
-        PipelineData _pipelineData;
+        Environment _environment;
 
         public AbstractApplicationXWwwFormUrlencodedCodec(ICommunicationContext context, IObjectBinderLocator locator)
         {
-            _pipelineData = context.PipelineData;
+            _environment = context.Environment;
             _binderLocator = locator;
         }
 
@@ -32,8 +33,8 @@ namespace OpenRasta.Codecs
         {
             get
             {
-                return (_pipelineData[FORMDATA_CACHE]
-                        ?? (_pipelineData[FORMDATA_CACHE] = new NullBehaviorDictionary<IHttpEntity, Dictionary<string, string[]>>())) as
+                return (_environment[FORMDATA_CACHE]
+                        ?? (_environment[FORMDATA_CACHE] = new NullBehaviorDictionary<IHttpEntity, Dictionary<string, string[]>>())) as
                        IDictionary<IHttpEntity, Dictionary<string, string[]>>;
             }
         }

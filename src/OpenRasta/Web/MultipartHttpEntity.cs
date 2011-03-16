@@ -60,6 +60,12 @@ namespace OpenRasta.Web
         }
         public IList<Error> Errors{ get; private set; }
 
+        public Uri ContentLocation
+        {
+            get { return Headers.ContentLocation; }
+            set { Headers.ContentLocation = value; }
+        }
+
         public HttpHeaderDictionary Headers { get; private set; }
         public ICodec Codec { get; set; }
         public object Instance { get; set; }

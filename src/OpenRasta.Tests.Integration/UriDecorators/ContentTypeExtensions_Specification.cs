@@ -17,10 +17,10 @@ namespace OpenRasta.Tests.Integration.UriDecorators
         {
             ConfigureServer(()=>
             {
-                ResourceSpace.Has.ResourcesOfType<Customer>()
-                    .AtUri("/customer")
-                    .HandledBy<CustomerHandler>()
-                    .AsXmlDataContract();
+                ResourceSpace.Has.Resource<Customer>()
+                    .Uri("/customer")
+                    .Handler<CustomerHandler>()
+                    .XmlDataContract();
 
                 ResourceSpace.Uses.UriDecorator<ContentTypeExtensionUriDecorator>();
             });

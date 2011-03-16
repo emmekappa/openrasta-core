@@ -4,7 +4,7 @@ using OpenRasta.TypeSystem;
 
 namespace OpenRasta.Configuration.Fluent.Implementation
 {
-    public class FluentTarget : IHas, IUses, IFluentTarget
+    public class FluentTarget : IHas, IUses, IFluentTarget, IOverrides
     {
         readonly IMetaModelRepository _repository;
         readonly IDependencyResolver _resolver;

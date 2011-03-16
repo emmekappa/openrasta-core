@@ -38,7 +38,7 @@ namespace BasicAuthenticationScheme_Specification
 
             string[] userRoles = new[] { "Admin", "Manager", "Developer" };
 
-            _request.Headers["Authorization"] = validAuthString;
+            _request.Headers.Set("Authorization", validAuthString);
 
             _mockAuthenticator
                 .Expect(auth => auth.Authenticate(It.Is<BasicAuthRequestHeader>(h => h.Username == username && h.Password == password)))
@@ -60,7 +60,7 @@ namespace BasicAuthenticationScheme_Specification
         {
             // given
             string malformedAuthString = "Basic notAValidBase64String!!!";
-            _request.Headers["Authorization"] = malformedAuthString;
+            _request.Headers.Set("Authorization", malformedAuthString);
 
             // when
             var result = _basicScheme.Authenticate(_request);

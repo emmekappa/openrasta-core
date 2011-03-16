@@ -16,9 +16,9 @@ using OpenRasta.DI;
 
 namespace OpenRasta.Configuration
 {
+    [Obsolete("Wrapping configuration is not needed anymore. Configuration can now be specified straight into the IConfigurationSource.Configure method.")]
     public static class OpenRastaConfiguration
     {
-        static bool _isBeingConfigured;
 
         /// <summary>
         /// Creates a manual configuration of the resources supported by the application.
@@ -27,51 +27,15 @@ namespace OpenRasta.Configuration
         {
             get
             {
-                if (_isBeingConfigured)
-                    throw new InvalidOperationException("Configuration is already happening on another thread.");
-
-                _isBeingConfigured = true;
-
-                return new FluentConfigurator();
+                // NOP
+                return new BackwardCompatDisposable();
             }
         }
 
-        static void FinishConfiguration()
+        class BackwardCompatDisposable : IDisposable
         {
-            if (!_isBeingConfigured)
-                throw new InvalidOperationException(
-                    "Something went horribly wrong and the Configuration is deemed finish when it didn't even start!");
-
-            DependencyManager.Pipeline.Initialize();
-            _isBeingConfigured = false;
-        }
-
-        class FluentConfigurator : IDisposable
-        {
-            bool _disposed;
-
-            ~FluentConfigurator()
-            {
-                Debug.Assert(_disposed, "The FluentConfigurator wasn't disposed properly.");
-            }
-
             public void Dispose()
             {
-                GC.SuppressFinalize(this);
-                var exceptions = new List<OpenRastaConfigurationException>();
-                try
-                {
-                    var metaModelRepository = DependencyManager.GetService<IMetaModelRepository>();
-
-                    metaModelRepository.Process();
-                }
-                finally
-                {
-                    FinishConfiguration();
-                    _disposed = true;
-                    if (exceptions.Count > 0)
-                        throw new OpenRastaConfigurationException(exceptions);
-                }
             }
         }
     }

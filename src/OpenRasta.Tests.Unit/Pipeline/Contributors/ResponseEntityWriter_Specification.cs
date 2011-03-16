@@ -88,10 +88,10 @@ namespace ResponseEntityWriter_Specification
 
         void GivenAResponseCodec<TCodec>(object config)
         {
-            if (Context.PipelineData.ResponseCodec != null)
-                Context.PipelineData.ResponseCodec = null;
+            if (Context.Environment.ResponseCodec != null)
+                Context.Environment.ResponseCodec = null;
 
-            Context.PipelineData.ResponseCodec = CodecRegistration.FromResourceType(typeof(object),
+            Context.Environment.ResponseCodec = CodecRegistration.FromResourceType(typeof(object),
                                                                        typeof(TCodec),
                                                                        TypeSystems.Default,
                                                                        new MediaType("application/unknown"),

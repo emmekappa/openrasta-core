@@ -124,7 +124,7 @@ namespace OpenRasta.Pipeline.Contributors
         {
             if (context.OperationResult is OperationResult.Unauthorized)
             {
-                context.Response.Headers["WWW-Authenticate"] =
+                context.Response.Headers.Add("WWW-Authenticate",
                     new DigestHeader
                     {
                         Realm = "Digest Authentication",
@@ -133,7 +133,7 @@ namespace OpenRasta.Pipeline.Contributors
                         Stale = false,
                         Opaque = "opaque"
                     }
-                        .ServerResponseHeader;
+                        .ServerResponseHeader);
             }
             return PipelineContinuation.Continue;
         }

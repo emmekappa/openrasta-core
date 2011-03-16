@@ -38,11 +38,11 @@ Content-Disposition: form-data; name=""dateofbirth""
 
         public when_the_request_contains_a_multipart_form_data_entity()
         {
-            ConfigureServer(() => ResourceSpace.Has.ResourcesOfType<Customer>()
-                                      .AtUri("/")
+            ConfigureServer(() => ResourceSpace.Has.Resource<Customer>()
+                                      .Uri("/")
                                       .And
-                                      .AtUri("/multipart").Named("PostMultipart")
-                                      .HandledBy<CustomerHandler>());
+                                      .Uri("/multipart").Named("PostMultipart")
+                                      .Handler<CustomerHandler>());
         }
         [Test]
         public void the_multipart_entity_is_received()
