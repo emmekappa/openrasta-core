@@ -67,6 +67,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonInfo.cs">
+      <Link>Properties\CommonInfo.cs</Link>
+    </Compile>
     <Compile Include="SpecExtensions.cs" />
     <Compile Include="SpecExtensionsFixture.cs" />
     <Compile Include="context.cs" />

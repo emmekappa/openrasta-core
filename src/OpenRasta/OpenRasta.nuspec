@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>OpenRasta.Core</id>
-    <version>2.1</version>
     <title>$title$</title>
+    <version>$version$</version>
     <authors>OpenRasta</authors>
     <owners>OpenRasta</owners>    
     <projectUrl>https://github.com/openrasta/openrasta-core</projectUrl>    
